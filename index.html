@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CableForge</title>
+    <meta
+      name="description"
+      content="App para criar chicotes elétricos com cadastro de conectores LCSC."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <div class="bg-orb bg-orb--left"></div>
+    <div class="bg-orb bg-orb--right"></div>
+
+    <main class="shell">
+      <header class="topbar">
+        <div class="topbar__brand">CableForge</div>
+        <div class="topbar__tabs" role="tablist" aria-label="Seções">
+          <button class="topbar__tab is-active" id="tab-main" type="button" data-tab="main" aria-pressed="true">
+            Design
+          </button>
+          <button class="topbar__tab" id="tab-export" type="button" data-tab="export" aria-pressed="false">
+            Exportar e visualizar
+          </button>
+          <button class="topbar__tab" id="tab-database" type="button" data-tab="database" aria-pressed="false">
+            Banco de dados
+          </button>
+        </div>
+        <button class="button button--ghost theme-toggle" id="theme-toggle" type="button" aria-pressed="false">
+          Modo escuro
+        </button>
+      </header>
+
+      <section data-view="main">
+        <section class="hero panel">
+          <div class="hero-copy">
+            <div class="hero-copy__top">
+              <div>
+                <h1>CableForge</h1>
+              </div>
+            </div>
+            <p class="lede">
+              Crie chicotes e cabos elétricos com saída pronta para fabricação,
+              usando códigos de conector da LCSC para acelerar o processo.
+            </p>
+          </div>
+        </section>
+
+        <section class="grid grid--design">
+          <div class="column">
+            <article class="panel">
+              <div class="panel__header">
+              <div>
+                <h2>Dados do design</h2>
+                  <p>Metadados do projeto para organização e rastreio.</p>
+                </div>
+              </div>
+              <div class="form-grid form-grid--two">
+                <label>
+                  Projeto
+                  <input id="meta-project" type="text" placeholder="Nome do Chicote/Projeto" />
+                </label>
+                <label>
+                  Revisão
+                  <input id="meta-revision" type="text" placeholder="A" />
+                </label>
+                <label>
+                  Cliente
+                  <input id="meta-customer" type="text" placeholder="Nova Instruments" />
+                </label>
+                <label>
+                  Responsável
+                  <input id="meta-owner" type="text" placeholder="Seu nome" />
+                </label>
+              </div>
+            </article>
+
+            <article class="panel">
+              <div class="panel__header">
+                <div>
+                  <h2>Conectores</h2>
+                  <p>Use o código LCSC como part number do fornecedor.</p>
+                </div>
+                <button class="button button--ghost" id="add-connector" type="button">
+                  + Conector
+                </button>
+              </div>
+              <div id="connectors"></div>
+            </article>
+
+            <article class="panel">
+              <div class="panel__header">
+                <div>
+                  <h2>Cabos</h2>
+                  <p>Bitola, comprimento e contagem de vias do chicote.</p>
+                </div>
+                <button class="button button--ghost" id="add-cable" type="button">
+                  + Cabo
+                </button>
+              </div>
+              <div id="cables"></div>
+            </article>
+
+            <article class="panel">
+              <div class="panel__header">
+                <div>
+                  <h2>Conexões</h2>
+                  <p>Monte as rotas entre conectores e cabos.</p>
+                </div>
+                <button class="button button--ghost" id="add-connection" type="button">
+                  + Ligação
+                </button>
+              </div>
+              <div id="connections"></div>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <section data-view="export" hidden>
+        <section class="hero panel">
+          <div class="hero-copy">
+            <div class="hero-copy__top">
+              <div>
+                <h1>Exportar e visualizar</h1>
+              </div>
+            </div>
+            <p class="lede">
+              Gere a visualização do chicote, confira o resultado ampliado e exporte apenas a imagem quando precisar.
+            </p>
+          </div>
+        </section>
+
+        <section class="grid grid--export">
+          <aside class="column">
+            <article class="panel panel--sticky">
+              <div class="panel__header">
+                <div>
+                  <h2>Design</h2>
+                  <p>Gere a visualização e confira o resultado aqui.</p>
+                </div>
+              </div>
+              <div class="actions">
+                <button class="button button--secondary" id="generate-wireviz" type="button">
+                  Gerar chicote
+                </button>
+                <button class="button" id="export-wireviz" type="button">
+                  Exportar PNG
+                </button>
+                <button class="button button--ghost" id="expand-wireviz" type="button">
+                  Ver em tamanho grande
+                </button>
+              </div>
+              <div id="wireviz-status" class="status"></div>
+              <div id="wireviz-preview" class="preview-box"></div>
+              <pre id="wireviz-bom" class="code-block code-block--compact"></pre>
+            </article>
+
+            <article class="panel" hidden>
+              <div class="panel__header">
+                <div>
+                  <h2>Dados de saída</h2>
+                  <p>Saída pronta para salvar como `.yml`.</p>
+                </div>
+              </div>
+              <pre id="yaml-output" class="code-block"></pre>
+            </article>
+          </aside>
+        </section>
+      </section>
+
+      <section data-view="database" hidden>
+        <section class="hero panel">
+          <div class="hero-copy">
+            <div class="hero-copy__top">
+              <div>
+                <h1>Banco de dados</h1>
+              </div>
+            </div>
+            <p class="lede">
+              Cadastre modelos locais de conectores e cabos para reutilizar no chicote sem refazer os dados toda vez.
+            </p>
+          </div>
+        </section>
+
+        <section class="db-grid">
+          <article class="panel">
+            <div class="panel__header">
+              <div>
+                <h2>Conectores salvos</h2>
+                <p>Modelos locais com nome, tipo, fabricante e demais campos.</p>
+              </div>
+              <button class="button button--ghost" id="add-db-connector" type="button">
+                + Conector salvo
+              </button>
+            </div>
+            <div id="catalog-connectors"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel__header">
+              <div>
+                <h2>Cabos salvos</h2>
+                <p>Modelos locais de cabos para reaproveitar nos chicotes.</p>
+              </div>
+              <button class="button button--ghost" id="add-db-cable" type="button">
+                + Cabo salvo
+              </button>
+            </div>
+            <div id="catalog-cables"></div>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <div class="modal" id="wireviz-modal" aria-hidden="true">
+      <div class="modal__backdrop" data-action="close-wireviz-modal"></div>
+      <section class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="wireviz-modal-title">
+        <div class="modal__header">
+          <div>
+            <h2 id="wireviz-modal-title">Design em tamanho grande</h2>
+            <p>Use esta visualização para conferir detalhes do chicote com mais conforto.</p>
+          </div>
+          <button class="button button--ghost" type="button" data-action="close-wireviz-modal">Fechar</button>
+        </div>
+        <div id="wireviz-modal-preview" class="modal__preview"></div>
+      </section>
+    </div>
+  </body>
+</html>

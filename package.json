@@ -1,0 +1,9 @@
+{
+  "name": "cableforge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "App local para criar chicotes WireViz com conectores LCSC.",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
